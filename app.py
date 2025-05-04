@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import markdown
 import json
-import openai
+from openai import OpenAI
 
 st.set_page_config(page_title="JB Housing Empire AI", layout="wide")
 
@@ -63,9 +63,9 @@ elif page == "Deal Analyzer":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-            openai.api_key = st.session_state.api_key
+            client = OpenAI(api_key = st.session_state.api_key
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You are a real estate underwriting assistant."},
@@ -88,9 +88,9 @@ elif page == "Script Generator":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-            openai.api_key = st.session_state.api_key
+            client = OpenAI(api_key = st.session_state.api_key
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You generate real estate negotiation scripts in a 5x5 format."},
@@ -111,10 +111,10 @@ elif page == "LOI Builder":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-            openai.api_key = st.session_state.api_key
+            client = OpenAI(api_key = st.session_state.api_key
             try:
                 prompt = f"/loi {structure}\nSeller: {name}\nPrice: ${price}"
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You write formal real estate Letters of Intent."},
