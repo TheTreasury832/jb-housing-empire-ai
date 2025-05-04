@@ -65,6 +65,7 @@ elif page == "Deal Analyzer":
         else:
             client = OpenAI(api_key = st.session_state.api_key
             try:
+    pass  # placeholder to prevent syntax error
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -90,6 +91,7 @@ elif page == "Script Generator":
         else:
             client = OpenAI(api_key = st.session_state.api_key
             try:
+    pass  # placeholder to prevent syntax error
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -113,6 +115,7 @@ elif page == "LOI Builder":
         else:
             client = OpenAI(api_key = st.session_state.api_key
             try:
+    pass  # placeholder to prevent syntax error
                 prompt = f"/loi {structure}\nSeller: {name}\nPrice: ${price}"
                 response = client.chat.completions.create(
                     model="gpt-4",
