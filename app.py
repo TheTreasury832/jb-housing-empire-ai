@@ -5,9 +5,9 @@ import pandas as pd
 import markdown
 import json
 import openai
-import os
 
 st.set_page_config(page_title="JB Housing Empire AI", layout="wide")
+
 st.markdown(
     "<h1 style='text-align: center; color: cyan;'>JB Housing Empire AI System</h1>",
     unsafe_allow_html=True
@@ -48,10 +48,6 @@ elif page == "Dashboard":
     st.write("**Conversions:**", kpi_data.get("conversions", 0))
     st.write("**Cash Flow:**", f"${kpi_data.get('cashFlow', 0)}")
     st.write("**ROI:**", f"{kpi_data.get('roi', 0)}%")
-    st.write("**Offers Sent:**", kpi_data.get("offers_sent", 0))
-    st.write("**Offers Accepted:**", kpi_data.get("offers_accepted", 0))
-    st.write("**Close Rate:**", kpi_data.get("close_rate", "0%"))
-    st.write("**Avg Entry Fee:**", kpi_data.get("avg_entry_fee", "$0"))
 
 elif page == "Lead Intake":
     st.header("📁 Deal Flow Leads")
@@ -69,12 +65,11 @@ elif page == "Deal Analyzer":
         else:
             openai.api_key = st.session_state.api_key
             try:
-                client = openai.OpenAI(api_key=st.session_state.api_key)
-                response = client.chat.completions.create(
+                response = openai.ChatCompletion.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You are a real estate underwriting assistant."},
-                        {"role": "user", "content": f"Analyze this property address: {address}"}
+                        {"role": "user", "content": f"/analyze {address}"}
                     ]
                 )
                 st.success("GPT Analysis:")
@@ -95,12 +90,11 @@ elif page == "Script Generator":
         else:
             openai.api_key = st.session_state.api_key
             try:
-                client = openai.OpenAI(api_key=st.session_state.api_key)
-                response = client.chat.completions.create(
+                response = openai.ChatCompletion.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You generate real estate negotiation scripts in a 5x5 format."},
-                        {"role": "user", "content": f"Generate a 5x5 real estate negotiation script for deal type: {deal_type}"}
+                        {"role": "user", "content": f"/script {deal_type}"}
                     ]
                 )
                 st.success("GPT Script:")
@@ -119,12 +113,8 @@ elif page == "LOI Builder":
         else:
             openai.api_key = st.session_state.api_key
             try:
-                prompt = f"Generate a real estate LOI for the following:
-Structure: {structure}
-Seller: {name}
-Offer Price: ${price}"
-                client = openai.OpenAI(api_key=st.session_state.api_key)
-                response = client.chat.completions.create(
+                prompt = f"/loi {structure}\nSeller: {name}\nPrice: ${price}"
+                response = openai.ChatCompletion.create(
                     model="gpt-4",
                     messages=[
                         {"role": "system", "content": "You write formal real estate Letters of Intent."},
