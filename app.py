@@ -24,6 +24,12 @@ page = st.sidebar.selectbox("Navigation", [
 if "api_key" not in st.session_state:
     st.session_state.api_key = ""
 
+# Universal model picker (applies to all GPT-based pages)
+if st.session_state.api_key:
+    model_choice = st.sidebar.selectbox("🧠 Choose GPT Model", ["gpt-3.5-turbo", "gpt-4"], index=0)
+else:
+    model_choice = "gpt-3.5-turbo"
+
 if page == "Settings (API Key)":
     st.header("🔐 OpenAI GPT Key Setup")
     st.session_state.api_key = st.text_input("Enter your OpenAI API Key", type="password")
@@ -70,7 +76,7 @@ elif page == "Deal Analyzer":
             try:
                 client = openai.OpenAI(api_key=st.session_state.api_key)
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model=model_choice,
                     messages=[
                         {"role": "system", "content": "You are a real estate underwriting assistant."},
                         {"role": "user", "content": f"/analyze {address}"}
@@ -95,7 +101,7 @@ elif page == "Script Generator":
             try:
                 client = openai.OpenAI(api_key=st.session_state.api_key)
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model=model_choice,
                     messages=[
                         {"role": "system", "content": "You generate real estate negotiation scripts in a 5x5 format."},
                         {"role": "user", "content": f"/script {deal_type}"}
@@ -119,7 +125,7 @@ elif page == "LOI Builder":
                 client = openai.OpenAI(api_key=st.session_state.api_key)
                 prompt = f"/loi {structure}\nSeller: {name}\nPrice: ${price}"
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model=model_choice,
                     messages=[
                         {"role": "system", "content": "You write formal real estate Letters of Intent."},
                         {"role": "user", "content": prompt}
