@@ -1,14 +1,11 @@
 
 import streamlit as st
-import os
-from dotenv import load_dotenv
 from pathlib import Path
 import pandas as pd
 import markdown
 import json
 from openai import OpenAI
 
-load_dotenv()
 st.set_page_config(page_title="JB Housing Empire AI", layout="wide")
 
 st.markdown(
@@ -25,10 +22,7 @@ page = st.sidebar.selectbox("Navigation", [
 
 # Session state for API key
 if "api_key" not in st.session_state:
-
-# Auto-load API key from .env
-if "api_key" not in st.session_state or not st.session_state.api_key:
-    st.session_state.api_key = os.getenv("OPENAI_API_KEY", "")
+    st.session_state.api_key = ""
 
 if page == "Settings (API Key)":
     st.header("🔐 OpenAI GPT Key Setup")
@@ -69,7 +63,7 @@ elif page == "Deal Analyzer":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-client = OpenAI(api_key = st.session_state.api_key)
+            client = OpenAI(api_key = st.session_state.api_key
             try:
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -94,7 +88,7 @@ elif page == "Script Generator":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-client = OpenAI(api_key = st.session_state.api_key)
+            client = OpenAI(api_key = st.session_state.api_key
             try:
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -117,7 +111,7 @@ elif page == "LOI Builder":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-client = OpenAI(api_key = st.session_state.api_key)
+            client = OpenAI(api_key = st.session_state.api_key
             try:
                 prompt = f"/loi {structure}\nSeller: {name}\nPrice: ${price}"
                 response = client.chat.completions.create(
