@@ -1,10 +1,10 @@
-
 import streamlit as st
 from pathlib import Path
 import pandas as pd
 import markdown
 import json
-from openai import OpenAI
+import openai
+import os
 
 st.set_page_config(page_title="JB Housing Empire AI", layout="wide")
 
@@ -42,12 +42,16 @@ elif page == "Home":
 
 elif page == "Dashboard":
     st.header("📊 KPI Dashboard")
-    kpi_data = json.load(open("KPI.json"))
-    st.write("**Total Leads:**", kpi_data.get("totalLeads", 0))
-    st.write("**Response Rate:**", f"{kpi_data.get('responseRate', 0)}%")
-    st.write("**Conversions:**", kpi_data.get("conversions", 0))
-    st.write("**Cash Flow:**", f"${kpi_data.get('cashFlow', 0)}")
-    st.write("**ROI:**", f"{kpi_data.get('roi', 0)}%")
+    try:
+        with open("KPI.json", "r") as kpi_file:
+            kpi_data = json.load(kpi_file)
+            st.write("**Total Leads:**", kpi_data.get("totalLeads", 0))
+            st.write("**Response Rate:**", f"{kpi_data.get('responseRate', 0)}%")
+            st.write("**Conversions:**", kpi_data.get("conversions", 0))
+            st.write("**Cash Flow:**", f"${kpi_data.get('cashFlow', 0)}")
+            st.write("**ROI:**", f"{kpi_data.get('roi', 0)}%")
+    except Exception as e:
+        st.error(f"Unable to load KPI data: {e}")
 
 elif page == "Lead Intake":
     st.header("📁 Deal Flow Leads")
@@ -63,9 +67,8 @@ elif page == "Deal Analyzer":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-            client = OpenAI(api_key = st.session_state.api_key
             try:
-    pass  # placeholder to prevent syntax error
+                client = openai.OpenAI(api_key=st.session_state.api_key)
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -89,9 +92,8 @@ elif page == "Script Generator":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-            client = OpenAI(api_key = st.session_state.api_key
             try:
-    pass  # placeholder to prevent syntax error
+                client = openai.OpenAI(api_key=st.session_state.api_key)
                 response = client.chat.completions.create(
                     model="gpt-4",
                     messages=[
@@ -113,9 +115,8 @@ elif page == "LOI Builder":
         if not st.session_state.api_key:
             st.warning("Please enter your API key in the Settings tab.")
         else:
-            client = OpenAI(api_key = st.session_state.api_key
             try:
-    pass  # placeholder to prevent syntax error
+                client = openai.OpenAI(api_key=st.session_state.api_key)
                 prompt = f"/loi {structure}\nSeller: {name}\nPrice: ${price}"
                 response = client.chat.completions.create(
                     model="gpt-4",
@@ -131,5 +132,8 @@ elif page == "LOI Builder":
 
 elif page == "Empire Manual":
     st.header("📘 Empire Manual")
-    with open("empire_manual.md", "r") as md_file:
-        st.markdown(md_file.read())
+    try:
+        with open("empire_manual.md", "r") as md_file:
+            st.markdown(md_file.read())
+    except FileNotFoundError:
+        st.error("Manual file not found.")
